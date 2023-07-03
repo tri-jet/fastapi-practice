@@ -9,7 +9,7 @@ def get_user(db: Session, user_id: int): # defining types of the database and us
     # query database in the models schema for the User table, where the one of the rows in the User table has the given user id value.
     # i.e. Select User From Users Where User.id = Given ID (first instance)
 
-def get_user(db: Session, email: str):
+def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
 def get_users(db: Session, skip: int=0, limit: int=100):
