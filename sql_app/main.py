@@ -1,8 +1,11 @@
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
+from fastapi.responses import HTMLResponse
 
 from .  import crud, models, schemas
 from .database import SessionLocal, engine
+
+
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -19,9 +22,24 @@ def get_db():
 
 # Rest functions
 
-@app.get("/")
-async def hello():
-    return{"message":"Hello!"}
+@app.get("/",response_class=HTMLResponse)
+async def landing():
+    return """
+        <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>FastAPI Landing</title>
+            </head>
+            <body>
+                <h1>This is the FastAPI start page</h1>
+
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore deleniti, nulla ducimus facere voluptatem aut 
+                accusantium iusto modi mollitia laudantium, repellat repudiandae, excepturi eum. Placeat deserunt eligendi 
+                inventore debitis eaque?</p>
+            </body>
+        </html>
+    """
 
 @app.post("/users/", response_model = schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
