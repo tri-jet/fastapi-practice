@@ -64,6 +64,10 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 def create_item_for_user(user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)):
     return crud.create_user_item(db=db, item=item, user_id=user_id)
 
+@app.get("/users/{user_id}/items/{item_id}",response_model=schemas.Item)
+def read_item_of_user (user_id: int, item_id: int, db: Session = Depends(get_db)):
+    return crud.get_user_item(db,item_id=item_id,owner_id=user_id)
+
 
 @app.get("/items/", response_model=list[schemas.Item])
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
