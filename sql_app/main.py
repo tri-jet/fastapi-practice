@@ -74,6 +74,7 @@ def delete_user_item(user_id: int, item_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User item not found")
     else:
         crud.delete_user_item(db=db, item_id=item_id, owner_id=user_id)
+        return("Deleted item of user")
 
 
 @app.get("/items/", response_model=list[schemas.Item])
