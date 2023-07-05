@@ -5,8 +5,6 @@ from fastapi.responses import HTMLResponse
 from .  import crud, models, schemas
 from .database import SessionLocal, engine
 
-
-
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -67,6 +65,15 @@ def create_item_for_user(user_id: int, item: schemas.ItemCreate, db: Session = D
 @app.get("/users/{user_id}/items/{item_id}",response_model=schemas.Item)
 def read_item_of_user (user_id: int, item_id: int, db: Session = Depends(get_db)):
     return crud.get_user_item(db,item_id=item_id,owner_id=user_id)
+
+@app.delete("/users/del/{user_id}/items/{item_id}",response_model=None,status_code=200)
+def delete_user_item(user_id: int, item_id: int, db: Session = Depends(get_db)):
+    # return crud.delete_user_item(db,item_id=item_id,owner_id=user_id)
+    user_item = crud.get_user_item(db=db, item_id=item_id,owner_id=user_id)
+    if user_item is None:
+        raise HTTPException(status_code=404, detail="User item not found")
+    else:
+        crud.delete_user_item(db=db, item_id=item_id, owner_id=user_id)
 
 
 @app.get("/items/", response_model=list[schemas.Item])

@@ -29,13 +29,23 @@ def get_items(db:Session, skip: int=0, limit: int=100):
     #item_dict = db.query(models.Item).offset(skip).limit(limit).all()
 
 def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
-    db_item = models.Item(**item.dict(), owner_id = user_id)
-    db.add(db_item)
+    db_user_item = models.Item(**item.dict(), owner_id = user_id)
+    db.add(db_user_item)
     db.commit()
-    db.refresh(db_item)
-    return db_item
+    db.refresh(db_user_item)
+    return db_user_item
 
 def get_user_item(db: Session, item_id: int, owner_id: int):
     return db.query(models.Item).filter(models.Item.id ==item_id and models.Item.owner_id == owner_id).first()
 
+def delete_user_item(db: Session, item_id: int, owner_id: int):
+    # db_user_item = get_user_item(db=Session, item_id=item_id, owner_id=owner_id)
+    # issue is that db_user_item is a query result rather than an item instance/need to find what
+    # type of argument db.delete takes.
+    # db.delete(db_user_item)
+    # db.commit()
+    # db.refresh()
+    # return None
+    db.query(models.Item).filter(models.Item.id == item_id and models.Item.owner_id==owner_id).delete()
+    db.commit()
 
